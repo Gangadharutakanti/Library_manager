@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Librarian = require('../models/Librarian');
 
 const protect = async (req, res, next) => {
   let token;
@@ -7,13 +8,27 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select('-password');
+      
+      if (decoded.role === 'admin') {
+        req.user = { id: 'admin', role: 'admin', name: 'Administrator' };
+      } else if (decoded.role === 'librarian') {
+        req.user = await Librarian.findById(decoded.id).select('-password');
+        if (req.user) {
+          req.user.role = 'librarian';
+        }
+      } else {
+        req.user = await User.findById(decoded.id).select('-password');
+      }
+
+      if (!req.user) {
+        return res.status(401).json({ message: 'User not found' });
+      }
+
       next();
     } catch (error) {
       res.status(401).json({ message: 'Not authorized, token failed' });
     }
-  }
-  if (!token) {
+  } else {
     res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
@@ -26,4 +41,12 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+const librarianOrAdmin = (req, res, next) => {
+  if (req.user && (req.user.role === 'librarian' || req.user.role === 'admin')) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Not authorized for this action' });
+  }
+};
+
+module.exports = { protect, admin, librarianOrAdmin };

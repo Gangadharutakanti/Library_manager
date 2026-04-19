@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const borrowRoutes = require('./routes/borrowRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 connectDB();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/borrows', borrowRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('Library API is running...');

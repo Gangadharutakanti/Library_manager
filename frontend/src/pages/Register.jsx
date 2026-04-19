@@ -1,13 +1,22 @@
-import { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import API from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'student' });
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const roleParam = params.get('role');
+    if (roleParam && ['student', 'librarian'].includes(roleParam)) {
+      setFormData(prev => ({ ...prev, role: roleParam }));
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +34,21 @@ const Register = () => {
     <div className="flex justify-center items-center h-full mt-10">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
+
+        {/* Role Selection Tabs */}
+        <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+          {['student', 'librarian'].map((r) => (
+            <button
+              type="button"
+              key={r}
+              className={`flex-1 py-2 text-sm font-semibold rounded-md capitalize transition-colors ${formData.role === r ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setFormData({...formData, role: r})}
+            >
+               {r}
+            </button>
+          ))}
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-600 mb-1">Name</label>
@@ -57,11 +81,11 @@ const Register = () => {
             />
           </div>
           <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
-            Register
+            Register as {formData.role.charAt(0).toUpperCase() + formData.role.slice(1)}
           </button>
         </form>
         <p className="mt-4 text-center text-gray-600">
-          Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+          Already have an account? <Link to={`/login?role=${formData.role}`} className="text-blue-600 hover:underline">Login</Link>
         </p>
       </div>
     </div>
