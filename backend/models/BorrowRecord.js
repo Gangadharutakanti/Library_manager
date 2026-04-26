@@ -7,6 +7,7 @@ const borrowRecordSchema = mongoose.Schema(
     borrowDate: { type: Date, default: Date.now },
     dueDate: { type: Date, required: true },
     returnDate: { type: Date },
+    rating: { type: Number, min: 1, max: 5 },
     status: { type: String, enum: ['borrowed', 'returned', 'overdue'], default: 'borrowed' },
   },
   { timestamps: true }

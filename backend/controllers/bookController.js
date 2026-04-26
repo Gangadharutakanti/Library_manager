@@ -20,6 +20,18 @@ const getBooks = async (req, res) => {
   }
 };
 
+// @desc    Fetch most viewed books
+// @route   GET /api/books/most-viewed
+// @access  Public
+const getMostViewedBooks = async (req, res) => {
+  try {
+    const books = await Book.find({}).sort({ viewCount: -1, createdAt: -1 }).limit(6);
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Fetch single book
 // @route   GET /api/books/:id
 // @access  Public
@@ -31,6 +43,27 @@ const getBookById = async (req, res) => {
     } else {
       res.status(404).json({ message: 'Book not found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Increment a book view count
+// @route   PUT /api/books/:id/view
+// @access  Public
+const incrementBookView = async (req, res) => {
+  try {
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    res.json({ _id: book._id, viewCount: book.viewCount });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -84,4 +117,12 @@ const deleteBook = async (req, res) => {
   }
 };
 
-module.exports = { getBooks, getBookById, createBook, updateBook, deleteBook };
+module.exports = {
+  getBooks,
+  getMostViewedBooks,
+  getBookById,
+  incrementBookView,
+  createBook,
+  updateBook,
+  deleteBook,
+};

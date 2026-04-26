@@ -11,7 +11,11 @@ const bookSchema = mongoose.Schema(
     'Image-URL-M': { type: String },
     'Image-URL-L': { type: String },
     department: { type: String },
-    availabilityStatus: { type: Boolean, default: true }
+    availabilityStatus: { type: Boolean, default: true },
+    viewCount: { type: Number, default: 0, min: 0 },
+    averageRating: { type: Number, default: 0, min: 0, max: 5 },
+    ratingsCount: { type: Number, default: 0, min: 0 },
+    totalRatingScore: { type: Number, default: 0, min: 0 }
   },
   { timestamps: true, collection: 'books_collection' }
 );

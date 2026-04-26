@@ -31,17 +31,17 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-full mt-10">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
+    <div className="flex justify-center items-center min-h-[80vh]">
+      <div className="glass-panel p-8 rounded-2xl w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-white mb-6">Create Account</h2>
 
         {/* Role Selection Tabs */}
-        <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+        <div className="flex mb-6 bg-black/20 rounded-lg p-1 backdrop-blur-sm border border-white/5">
           {['student', 'librarian'].map((r) => (
             <button
               type="button"
               key={r}
-              className={`flex-1 py-2 text-sm font-semibold rounded-md capitalize transition-colors ${formData.role === r ? 'bg-white shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`flex-1 py-2 text-sm font-semibold rounded-md capitalize transition-all duration-300 ${formData.role === r ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 shadow-sm border border-emerald-500/30' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
               onClick={() => setFormData({...formData, role: r})}
             >
                {r}
@@ -51,41 +51,43 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-600 mb-1">Name</label>
+            <label className="block text-gray-300 font-medium mb-1">Name</label>
             <input 
               type="text" 
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="glass-input"
               value={formData.name} 
               onChange={(e) => setFormData({...formData, name: e.target.value})} 
               required 
             />
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">Email</label>
+            <label className="block text-gray-300 font-medium mb-1">Email</label>
             <input 
               type="email" 
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="glass-input"
               value={formData.email} 
               onChange={(e) => setFormData({...formData, email: e.target.value})} 
               required 
             />
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">Password</label>
+            <label className="block text-gray-300 font-medium mb-1">Password</label>
             <input 
               type="password" 
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="glass-input"
               value={formData.password} 
               onChange={(e) => setFormData({...formData, password: e.target.value})} 
               required 
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
-            Register as {formData.role.charAt(0).toUpperCase() + formData.role.slice(1)}
-          </button>
+          <div className="pt-2">
+            <button type="submit" className="glass-button-primary w-full">
+              Register as {formData.role.charAt(0).toUpperCase() + formData.role.slice(1)}
+            </button>
+          </div>
         </form>
-        <p className="mt-4 text-center text-gray-600">
-          Already have an account? <Link to={`/login?role=${formData.role}`} className="text-blue-600 hover:underline">Login</Link>
+        <p className="mt-6 text-center text-gray-400">
+          Already have an account? <Link to={`/login?role=${formData.role}`} className="text-emerald-400 hover:text-emerald-300 hover:underline">Login</Link>
         </p>
       </div>
     </div>
